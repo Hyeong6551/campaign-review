@@ -8,12 +8,28 @@
         <processorPath useClasspath="false">
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.30/f195ee86e6c896ea47a1d39defbe20eb59cd149d/lombok-1.18.30.jar" />
         </processorPath>
-        <module name="com.example.sb3_msa3.gateway-service.main" />
+        <module name="sb3_msa3.gateway-service.main" />
         <module name="com.example.sb3_msa3.board-service.main" />
         <module name="sb3_msa3.review-service.main" />
-        <module name="com.example.sb3_msa3.eureka-server.main" />
+        <module name="sb3_msa3.eureka-server.main" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="17" />
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="com.example.sb3_msa3.board-service.main" options="-parameters" />
+      <module name="com.example.sb3_msa3.board-service.test" options="-parameters" />
+      <module name="sb3_msa3.board-service" options="-parameters" />
+      <module name="sb3_msa3.eureka-server" options="-parameters" />
+      <module name="sb3_msa3.eureka-server.main" options="-parameters" />
+      <module name="sb3_msa3.eureka-server.test" options="-parameters" />
+      <module name="sb3_msa3.gateway-service" options="-parameters" />
+      <module name="sb3_msa3.gateway-service.main" options="-parameters" />
+      <module name="sb3_msa3.gateway-service.test" options="-parameters" />
+      <module name="sb3_msa3.review-service" options="-parameters" />
+      <module name="sb3_msa3.review-service.main" options="-parameters" />
+      <module name="sb3_msa3.review-service.test" options="-parameters" />
+    </option>
   </component>
 </project>

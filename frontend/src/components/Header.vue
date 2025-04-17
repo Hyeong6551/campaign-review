@@ -1,5 +1,41 @@
 <script setup lang="ts">
 import '../assets/style.css';
+
+import { ref, onMounted, watch } from 'vue'
+import { useAuthStore } from '../stores/auth.ts'
+import { storeToRefs } from 'pinia'
+
+const authStore = useAuthStore()
+const { isAuthenticated, username, role } = storeToRefs(authStore)
+
+// 로그인 상태 변경 감지
+watch(() => authStore.isAuthenticated, (newValue) => {
+  if (newValue) {
+    username.value = localStorage.getItem('username') || ''
+    role.value = localStorage.getItem('role') || ''
+  } else {
+    username.value = ''
+    role.value = ''
+  }
+})
+
+const handleLogout = () => {
+  localStorage.removeItem('token')
+  localStorage.removeItem('username')
+  localStorage.removeItem('role')
+  authStore.logout()
+}
+
+onMounted(() => {
+  const token = localStorage.getItem('token')
+  if (token) {
+    authStore.setAuth({
+      isAuthenticated: true,
+      username: localStorage.getItem('username') || '',
+      role: localStorage.getItem('role') || ''
+    })
+  }
+})
 </script>
 
 <template>
@@ -28,9 +64,19 @@ import '../assets/style.css';
 
       <!-- Login/Register -->
       <div class="flex items-center space-x-6">
-        <a href="/login" class="text-white hover:text-blue-300 font-semibold transition duration-200">로그인</a>
-        <a href="#" class="text-white hover:text-blue-300 font-semibold transition duration-200">회원가입</a>
+        <!-- 로그인 상태일 때 -->
+        <template v-if="isAuthenticated">
+          <span class="text-white font-semibold">👤 {{ username }}</span>
+          <button @click="handleLogout" class="text-white hover:text-blue-300 font-semibold transition duration-200">로그아웃</button>
+        </template>
+
+        <!-- 비로그인 상태일 때 -->
+        <template v-else>
+          <a href="/login" class="text-white hover:text-blue-300 font-semibold transition duration-200">로그인</a>
+          <a href="/register" class="text-white hover:text-blue-300 font-semibold transition duration-200">회원가입</a>
+        </template>
       </div>
+
     </div>
   </header>
   <nav class="bg-white border-t border-b py-3 shadow-sm mt-24">

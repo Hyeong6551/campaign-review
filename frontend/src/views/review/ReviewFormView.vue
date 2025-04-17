@@ -67,7 +67,7 @@ const submitReview = async () => {
       headers: { 'Content-Type': 'multipart/form-data' }
     })
     alert('리뷰가 등록되었습니다!')
-    router.push('/')
+    router.push('/reviewlist')
   } catch (error) {
     console.error('등록 실패:', error)
     alert('등록 실패')

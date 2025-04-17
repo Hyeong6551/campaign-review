@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import {onMounted, ref} from 'vue'
+import axios from 'axios'
 
 interface Review {
   id: number
@@ -9,61 +10,27 @@ interface Review {
   date: string
 }
 
-const image = "https://dummyimage.com/200x200/000/fff"
-const today = new Date().toISOString().split('T')[0] // 'YYYY-MM-DD' 형태 날짜
+const reviews = ref<Review[]>([])
 
-const reviews = ref<Review[]>([
-  {
-    id: 1,
-    title: '사장님이 친절하시고 아트가 예뻐요',
-    content: '카페 분위기도 좋고 라떼 아트가 인상적이었어요!',
-    imageUrl: image,
-    date: today
-  },
-  {
-    id: 2,
-    title: '고기가 신선하고 공간도 넓어요!',
-    content: '아이들과 함께 가기에도 좋은 고깃집이었어요.',
-    imageUrl: image,
-    date: today
-  },
-  {
-    id: 3,
-    title: '수제 간식 맛있어요! 꼬르륵댕댕~',
-    content: '반려견을 위한 간식이 너무 맛있었나봐요. 재방문 예정!',
-    imageUrl: image,
-    date: today
-  },
-  {
-    id: 4,
-    title: '대형 풀빌라 프라이빗 스테이 추천!',
-    content: '조용하고 힐링하기 딱 좋은 숙소였어요.',
-    imageUrl: image,
-    date: today
-  },
-  {
-    id: 5,
-    title: '리뷰용 샘플 이미지입니다',
-    content: '디자인 테스트용 샘플 데이터입니다.',
-    imageUrl: image,
-    date: today
-  },
-  {
-    id: 6,
-    title: '다시 방문하고 싶은 체험단 후기!',
-    content: '정성껏 체험하게 해주셔서 감사합니다!',
-    imageUrl: image,
-    date: today
-  },
-  {
-    id: 7,
-    title: '너무 예쁜 인테리어에 반했어요',
-    content: '사진 찍기 좋은 곳! 감성 충만한 공간이었어요.',
-    imageUrl: image,
-    date: today
+const fetchReviews = async () => {
+  try {
+    const res = await axios.get('/api/reviews/')
+    reviews.value = res.data.map((item: any) => ({
+      id: item.post_no,
+      title: item.title,
+      content: item.content,
+      imageUrl: item.imageURL,
+      date: item.createdDate.split('T')[0]
+    }))
+  } catch (err) {
+    console.error('리뷰 불러오기 실패:', err)
+    alert('리뷰를 불러오는 데 실패했어요.')
   }
-])
+}
 
+onMounted(fetchReviews)
+
+// review modal
 const isModalVisible = ref(false)
 const modalReview = ref<Review | null>(null)
 

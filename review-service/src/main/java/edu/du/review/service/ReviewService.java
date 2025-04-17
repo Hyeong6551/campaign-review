@@ -3,7 +3,6 @@ package edu.du.review.service;
 import edu.du.review.dto.ReviewDTO;
 import edu.du.review.entity.Review;
 import edu.du.review.repository.ReviewRepo;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,6 +28,7 @@ public class ReviewService {
         return reviewRepo.findAll();
     }
 
+    // 리뷰 작성
     @Transactional
     public Review saveReview(ReviewDTO reviewDTO, MultipartFile imageFile) {
         try {
@@ -51,10 +50,7 @@ public class ReviewService {
                     .imageURL(imageUrl)
                     .createdDate(LocalDateTime.now())
                     .build();
-
-            System.out.println(review);
             return reviewRepo.save(review);
-
         } catch (IOException e) {
             throw new RuntimeException("이미지 저장 실패", e);
         }
