@@ -34,7 +34,7 @@ const router = useRouter()
 const form = reactive({
   title : '',
   content :'',
-  postURL : ''
+  postURL : '',
 })
 
 const onFileChange = (event: Event) => {

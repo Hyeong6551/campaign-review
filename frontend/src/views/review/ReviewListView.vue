@@ -7,6 +7,7 @@ interface Review {
   title: string
   content: string
   imageUrl: string
+  postUrl : string
   date: string
 }
 
@@ -20,6 +21,7 @@ const fetchReviews = async () => {
       title: item.title,
       content: item.content,
       imageUrl: item.imageURL,
+      postUrl: item.postURL,
       date: item.createdDate.split('T')[0]
     }))
   } catch (err) {
@@ -75,6 +77,7 @@ const closeModal = () => {
         <p class="modal-title">{{ modalReview?.title }}</p>
         <p class="modal-content">{{ modalReview?.content }}</p>
         <hr>
+        <p class="modal-content">{{ modalReview?.postUrl }}</p>
         <div class="d-flex justify-content-between align-items-center">
           <p class="mb-0 small text-muted">이름입니다1</p>
           <p class="modal-date mb-0 small text-muted">{{ modalReview?.date }}</p>
