@@ -20,7 +20,7 @@ public class Review {
     @Column(nullable = false)
     private String title;
     private String content;
-    private String imageURL;
-    private String postURL;
+    private String image_url;
+    private String post_url;
     private LocalDateTime createdDate;
 }

@@ -1,18 +1,24 @@
 <script setup lang="ts">
-import {onMounted, ref} from 'vue'
+import {onMounted, ref, computed, watch} from 'vue'
 import axios from 'axios'
+import router from "@/router";
+import {useRoute} from "vue-router";
 
 interface Review {
   id: number
   title: string
   content: string
-  imageUrl: string
-  postUrl : string
+  image_url: string
+  post_url: string
   date: string
 }
 
+const route = useRoute()
 const reviews = ref<Review[]>([])
+const currentPage = ref(1)
+const maxReview = 18
 
+// 리뷰 불러오기
 const fetchReviews = async () => {
   try {
     const res = await axios.get('/api/reviews/')
@@ -20,8 +26,8 @@ const fetchReviews = async () => {
       id: item.post_no,
       title: item.title,
       content: item.content,
-      imageUrl: item.imageURL,
-      postUrl: item.postURL,
+      image_url: item.image_url,
+      post_url: item.post_url,
       date: item.createdDate.split('T')[0]
     }))
   } catch (err) {
@@ -30,7 +36,51 @@ const fetchReviews = async () => {
   }
 }
 
-onMounted(fetchReviews)
+// 페이지네이션을 위한 computed
+const paginatedReviews = computed(() => {
+  const start = (currentPage.value - 1) * maxReview
+  return reviews.value.slice(start, start + maxReview)
+})
+
+const totalPages = computed(() => {
+  return Math.ceil(reviews.value.length / maxReview)
+})
+
+const setPage = (page: number) => {
+  if (page < 1 || page > totalPages.value) {
+    router.replace('/error')
+    return
+  }
+
+  currentPage.value = page
+  const routePath = page === 1 ? '/review' : `/review/${page}`
+  if (route.fullPath !== routePath) {
+    router.push(routePath)
+  }
+}
+
+const getPageButtonClass = (page: number) => {
+  return [
+    'px-3 py-1 rounded border',
+    page === currentPage.value
+        ? 'bg-blue-500 text-white border-blue-500'
+        : 'bg-white text-gray-700 border-gray-300'
+  ]
+}
+
+onMounted(async () => {
+  await fetchReviews()
+  const pageParam = Number(route.params.page || 1)
+  setPage(pageParam)
+})
+
+watch(
+    () => route.params.page,
+    (newPage) => {
+      const pageNum = Number(newPage || 1)
+      setPage(pageNum)
+    }
+)
 
 // review modal
 const isModalVisible = ref(false)
@@ -44,40 +94,60 @@ const showModal = (review: Review) => {
 const closeModal = () => {
   isModalVisible.value = false
 }
-
 </script>
+
 
 <template>
   <div class="container my-5">
     <h2 class="title">체험단 리뷰 게시판</h2>
+    <!-- 리뷰-->
     <div class="review-grid">
-      <div class="review-card" v-for="review in reviews" :key="review.id">
+      <div class="review-card" v-for="review in paginatedReviews" :key="review.id">
         <a @click.prevent="showModal(review)">
-        <p class="review-id">&nbsp No. {{ review.id }}</p>
-          <img :src="review.imageUrl" alt="리뷰 이미지" />
+          <p class="review-id">&nbsp No. {{ review.id }}</p>
+          <img :src="`http://localhost:8004${review.image_url}?t=${Date.now()}`" alt="리뷰 이미지" />
           <div class="review-text">
             <p class="review-title">{{ review.title }}</p>
           </div>
           <div class="d-flex justify-content-between align-items-center">
             <p class="mb-0 small text-muted">닉네임</p>
-            <p class="mb-0 small text-muted">{{review.date}}</p>
+            <p class="mb-0 small text-muted">{{ review.date }}</p>
           </div>
         </a>
       </div>
     </div>
-    <router-link to="/review/form" class="btn btn-primary my-5 d-inline-flex">리뷰 작성</router-link>
+
+    <!-- 페이징 -->
+    <div class="container my-5 flex flex-col items-center">
+      <div class="pagination">
+        <button @click="setPage(currentPage - 1)" :disabled="currentPage === 1">Previous</button>
+        <button
+            v-for="page in totalPages"
+            :key="page"
+            :class="getPageButtonClass(page)"
+            @click="setPage(page)"
+        >
+          {{ page }}
+        </button>
+        <button @click="setPage(currentPage + 1)" :disabled="currentPage === totalPages">Next</button>
+      </div>
+    </div>
+
+    <div>
+      <router-link to="/review/form" class="btn btn-primary my-5 d-inline-flex">리뷰 작성</router-link>
+    </div>
   </div>
 
-<!-- Modal -->
+  <!-- Modal -->
   <div v-if="isModalVisible" class="modal-overlay" @click="closeModal">
     <div class="modal-content" @click.stop>
-      <img :src="modalReview?.imageUrl" alt="확대 이미지" class="modal-image" />
+      <img :src="`http://localhost:8004${modalReview?.image_url}?t=${Date.now()}`" class="modal-image" alt="리뷰 이미지" />
       <div class="modal-text">
         <p class="modal-id">No. {{ modalReview?.id }}</p>
         <p class="modal-title">{{ modalReview?.title }}</p>
         <p class="modal-content">{{ modalReview?.content }}</p>
         <hr>
-        <p class="modal-content">{{ modalReview?.postUrl }}</p>
+        <a :href="modalReview?.post_url" class="modal-content">{{ modalReview?.post_url }}</a>
         <div class="d-flex justify-content-between align-items-center">
           <p class="mb-0 small text-muted">이름입니다1</p>
           <p class="modal-date mb-0 small text-muted">{{ modalReview?.date }}</p>
@@ -88,6 +158,7 @@ const closeModal = () => {
     </div>
   </div>
 </template>
+
 
 <style scoped>
 .container {

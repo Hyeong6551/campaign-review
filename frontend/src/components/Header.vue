@@ -45,7 +45,7 @@ onMounted(() => {
       <!-- Logo -->
       <div class="flex items-center space-x-6">
         <a href="/" class="flex items-center space-x-4">
-          <h1 class="text-4xl font-bold text-white tracking-wide">xxsoft 체험단</h1>
+          <h1 class="text-4xl font-bold text-white tracking-wide">CTsoft 체험단</h1>
           <p class="text-lg text-white opacity-80">체험단에 참여하고 다양한 혜택을 누려보세요!</p>
         </a>
       </div>
@@ -64,13 +64,10 @@ onMounted(() => {
 
       <!-- Login/Register -->
       <div class="flex items-center space-x-6">
-        <!-- 로그인 상태일 때 -->
         <template v-if="isAuthenticated">
           <span class="text-white font-semibold">👤 {{ username }}</span>
           <button @click="handleLogout" class="text-white hover:text-blue-300 font-semibold transition duration-200">로그아웃</button>
         </template>
-
-        <!-- 비로그인 상태일 때 -->
         <template v-else>
           <a href="/login" class="text-white hover:text-blue-300 font-semibold transition duration-200">로그인</a>
           <a href="/register" class="text-white hover:text-blue-300 font-semibold transition duration-200">회원가입</a>
@@ -81,16 +78,13 @@ onMounted(() => {
   </header>
   <nav class="bg-white border-t border-b py-3 shadow-sm mt-24">
     <div class="container mx-auto px-6 flex justify-between">
-      <!-- 왼쪽: 카테고리 탭 네비게이션 -->
       <div class="flex space-x-6">
         <a href="#food" class="text-gray-700 hover:text-blue-600 font-medium">🍱 음식</a>
         <a href="#product" class="text-gray-700 hover:text-blue-600 font-medium">📦 제품</a>
         <a href="#beauty" class="text-gray-700 hover:text-blue-600 font-medium">💄 뷰티</a>
       </div>
-
-      <!-- 오른쪽: 리뷰 게시판, 공지사항 등 -->
       <div class="flex space-x-6">
-        <a href="/reviewlist" class="text-gray-700 hover:text-blue-600 font-medium">📝 리뷰 게시판</a>
+        <a href="/review" class="text-gray-700 hover:text-blue-600 font-medium">📝 리뷰 게시판</a>
         <a href="#notices" class="text-gray-700 hover:text-blue-600 font-medium">📢 공지사항</a>
         <a href="#faq" class="text-gray-700 hover:text-blue-600 font-medium">❓ FAQ</a>
       </div>

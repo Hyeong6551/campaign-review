@@ -4,9 +4,9 @@ import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import BoardView from '../views/BoardView.vue'
 import AdminView from '../views/AdminView.vue'
-import ReviewView from "@/views/review/ReviewView.vue";
 import ReviewListView from "@/views/review/ReviewListView.vue";
 import ReviewFormView from "@/views/review/ReviewFormView.vue";
+import ErrorView from "@/views/error/Error.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,19 +27,19 @@ const router = createRouter({
       component: RegisterView
     },
     {
-      path: '/reviewlist',
-      name: 'reviewList',
+      path: '/review',
+      name: 'review',
       component: ReviewListView
+    },
+    {
+      path: '/review/:page?',
+      name: 'Review',
+      component: ReviewListView, // 해당 컴포넌트
     },
     {
       path: '/review/form',
       name: 'reviewform',
       component: ReviewFormView
-    },
-    {
-      path: '/review',
-      name: 'review',
-      component: ReviewView
     },
     {
       path: '/board',
@@ -67,6 +67,11 @@ const router = createRouter({
       component: AdminView,
       meta: { requiresAuth: true, requiresAdmin: true }
     },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'error',
+      component: ErrorView,
+    }
   ]
 })
 

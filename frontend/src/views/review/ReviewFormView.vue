@@ -12,7 +12,7 @@
       </div>
       <div class="form-group">
         <label for="title">리뷰 URL</label>
-        <input v-model="form.postURL" id="blogURL" type="text" placeholder="ex) https://blog.naver.com/tpgud333/223833623056" required />
+        <input v-model="form.post_url" id="blogURL" type="text" placeholder="ex) https://blog.naver.com/tpgud333/223833623056" required />
       </div>
       <div class="form-group">
         <label for="file">이미지 업로드</label>
@@ -34,7 +34,7 @@ const router = useRouter()
 const form = reactive({
   title : '',
   content :'',
-  postURL : '',
+  post_url : '',
 })
 
 const onFileChange = (event: Event) => {
@@ -53,7 +53,7 @@ const submitReview = async () => {
       new Blob([JSON.stringify({
         title: form.title,
         content: form.content,
-        postURL: form.postURL
+        post_url: form.post_url
         })
       ],
       {
@@ -67,7 +67,7 @@ const submitReview = async () => {
       headers: { 'Content-Type': 'multipart/form-data' }
     })
     alert('리뷰가 등록되었습니다!')
-    router.push('/reviewlist')
+    router.push('/review')
   } catch (error) {
     console.error('등록 실패:', error)
     alert('등록 실패')
