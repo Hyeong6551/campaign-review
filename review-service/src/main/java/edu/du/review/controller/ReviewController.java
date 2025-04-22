@@ -29,7 +29,8 @@ public class ReviewController {
             @RequestPart("review") ReviewDTO reviewDTO,
             @RequestPart("image") MultipartFile imageFile) {
 
-        Review savedReview = reviewService.saveReview(reviewDTO, imageFile);
-        return ResponseEntity.ok(savedReview);
+        Review PostReview = reviewService.saveReview(reviewDTO, imageFile);
+        System.out.println(PostReview);
+        return ResponseEntity.ok(PostReview);
     }
 }

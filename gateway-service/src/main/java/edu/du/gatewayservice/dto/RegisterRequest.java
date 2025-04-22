@@ -1,10 +1,13 @@
 package edu.du.gatewayservice.dto;
 
+import edu.du.gatewayservice.entity.Role;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class RegisterRequest {
     private String id;
     private String password;
@@ -12,4 +15,9 @@ public class RegisterRequest {
     private String email;
     private String phone;
     private String post_url;
-} 
+
+    public RegisterRequest(String id, String nickname) {
+        this.id = id;
+        this.nickname = nickname;
+    }
+}

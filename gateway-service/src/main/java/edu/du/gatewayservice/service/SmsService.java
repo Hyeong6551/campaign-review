@@ -23,16 +23,23 @@ public class SmsService {
 
     public String sendSms(String phoneNumber) {
         String authCode = createAuthCode();
+        try {
+            redisTemplate.opsForValue().set(phoneNumber, authCode, 3, TimeUnit.MINUTES);
+        } catch (Exception e) {
+            throw new RuntimeException("Redis 저장 실패 → 문자 전송 안 함");
+        }
 
-        Message message = new Message();
-        message.setFrom("01062376551");
-        message.setTo(phoneNumber);
-        message.setText("[CT 체험단] 인증 요청이 있습니다. \n인증번호는 [" + authCode + "] 입니다.");
+        try {
+            Message message = new Message();
+            message.setFrom("01062376551");
+            message.setTo(phoneNumber);
+            message.setText("[CT 체험단] 인증번호 [" + authCode + "]");
 
-        messageService.sendOne(new SingleMessageSendingRequest(message));
-
-        redisTemplate.opsForValue().set(phoneNumber, authCode, 3, TimeUnit.MINUTES);
-        return authCode;
+            messageService.sendOne(new SingleMessageSendingRequest(message));
+            return authCode;
+        } catch (Exception e) {
+            throw new RuntimeException("SMS 전송 실패: " + e.getMessage());
+        }
     }
 
     // 인증번호 생성

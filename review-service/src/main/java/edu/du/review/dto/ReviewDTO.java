@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ReviewDTO {
     private Long no;
+    private Long user_no;
+    private String nickname;
     private String title;
     private String content;
     private String postURL;

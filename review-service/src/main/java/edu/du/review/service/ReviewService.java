@@ -39,6 +39,7 @@ public class ReviewService {
             String imageUrl = "/images/" + filename;
 
             Review review = Review.builder()
+                    .nickname(reviewDTO.getNickname())
                     .title(reviewDTO.getTitle())
                     .content(reviewDTO.getContent())
                     .post_url(reviewDTO.getPostURL())

@@ -21,7 +21,7 @@ public class AuthService {
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public LoginResponse login(LoginRequest loginRequest) {
-        User user = userRepository.findById(loginRequest.getUsername())
+        User user = userRepository.findById(loginRequest.getId())
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
@@ -29,6 +29,6 @@ public class AuthService {
         }
 
         String token = jwtUtil.generateToken(user.getId());
-        return new LoginResponse(token, user.getId(), user.getRole().value(), user.getEmail());
+        return new LoginResponse(token, user.getId(), user.getRole().value(), user.getNickname());
     }
 } 

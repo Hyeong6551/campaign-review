@@ -6,14 +6,14 @@ import { useAuthStore } from '../stores/auth'
 
 const router = useRouter()
 const authStore = useAuthStore()
-const username = ref('')
+const id = ref('')
 const password = ref('')
 const error = ref('')
 const errorMessage = ref('')
 
 const handleLogin = async () => {
   try {
-    const success = await authStore.loginWithCredentials(username.value, password.value)
+    const success = await authStore.loginWithCredentials(id.value, password.value)
     if (success) {
       router.push('/')
     } else {
@@ -34,12 +34,12 @@ const handleLogin = async () => {
     </div>
     <form @submit.prevent="handleLogin">
       <div class="mb-3">
-        <label for="username" class="form-label">아이디</label>
+        <label for="id" class="form-label">아이디</label>
         <input
           type="text"
           class="form-control"
-          id="username"
-          v-model="username"
+          id="id"
+          v-model="id"
           required
         />
       </div>

@@ -6,6 +6,7 @@ import {useRoute} from "vue-router";
 
 interface Review {
   id: number
+  nickname: string
   title: string
   content: string
   image_url: string
@@ -24,6 +25,7 @@ const fetchReviews = async () => {
     const res = await axios.get('/api/reviews/')
     reviews.value = res.data.map((item: any) => ({
       id: item.post_no,
+      nickname: item.nickname,
       title: item.title,
       content: item.content,
       image_url: item.image_url,
@@ -110,7 +112,7 @@ const closeModal = () => {
             <p class="review-title">{{ review.title }}</p>
           </div>
           <div class="d-flex justify-content-between align-items-center">
-            <p class="mb-0 small text-muted">닉네임</p>
+            <p class="mb-0 small text-muted">{{ review.nickname }}</p>
             <p class="mb-0 small text-muted">{{ review.date }}</p>
           </div>
         </a>
@@ -149,7 +151,7 @@ const closeModal = () => {
         <hr>
         <a :href="modalReview?.post_url" class="modal-content">{{ modalReview?.post_url }}</a>
         <div class="d-flex justify-content-between align-items-center">
-          <p class="mb-0 small text-muted">이름입니다1</p>
+          <p class="mb-0 small text-muted">{{ modalReview?.nickname }}</p>
           <p class="modal-date mb-0 small text-muted">{{ modalReview?.date }}</p>
         </div>
       </div>

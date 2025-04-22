@@ -6,23 +6,22 @@ import { useAuthStore } from '../stores/auth.ts'
 import { storeToRefs } from 'pinia'
 
 const authStore = useAuthStore()
-const { isAuthenticated, username, role } = storeToRefs(authStore)
+const { isAuthenticated, id, role, nickname } = storeToRefs(authStore)
 
 // 로그인 상태 변경 감지
 watch(() => authStore.isAuthenticated, (newValue) => {
   if (newValue) {
-    username.value = localStorage.getItem('username') || ''
+    id.value = localStorage.getItem('id') || ''
     role.value = localStorage.getItem('role') || ''
+    nickname.value = localStorage.getItem('nickname') || ''
   } else {
-    username.value = ''
+    id.value = ''
     role.value = ''
+    nickname.value = ''
   }
 })
 
 const handleLogout = () => {
-  localStorage.removeItem('token')
-  localStorage.removeItem('username')
-  localStorage.removeItem('role')
   authStore.logout()
 }
 
@@ -31,8 +30,9 @@ onMounted(() => {
   if (token) {
     authStore.setAuth({
       isAuthenticated: true,
-      username: localStorage.getItem('username') || '',
-      role: localStorage.getItem('role') || ''
+      id: localStorage.getItem('id') || '',
+      role: localStorage.getItem('role') || '',
+      nickname: localStorage.getItem('nickname') || ''
     })
   }
 })
@@ -65,7 +65,7 @@ onMounted(() => {
       <!-- Login/Register -->
       <div class="flex items-center space-x-6">
         <template v-if="isAuthenticated">
-          <span class="text-white font-semibold">👤 {{ username }}</span>
+          <span class="text-white font-semibold">👤 {{ nickname }}</span>
           <button @click="handleLogout" class="text-white hover:text-blue-300 font-semibold transition duration-200">로그아웃</button>
         </template>
         <template v-else>

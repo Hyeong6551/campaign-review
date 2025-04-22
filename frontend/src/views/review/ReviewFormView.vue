@@ -2,6 +2,7 @@
   <div class="container my-5">
     <h2 class="title">리뷰 작성</h2>
     <form @submit.prevent="submitReview" class="review-form">
+      <input type="text" v-model="form.nickname" id="nickname"/>
       <div class="form-group">
         <label for="title">제목</label>
         <input v-model="form.title" id="title" maxlength="40" placeholder="최대 40자 까지 입력 가능합니다" type="text" required />
@@ -24,9 +25,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import {ref, reactive, onMounted} from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
+import {useAuthStore} from "@/stores/auth.ts";
+
+const authStore = useAuthStore()
+const { nickname } = storeToRefs(authStore)
 
 const file = ref<File | null>(null)
 const router = useRouter()
@@ -35,6 +41,7 @@ const form = reactive({
   title : '',
   content :'',
   post_url : '',
+  nickname : ''
 })
 
 const onFileChange = (event: Event) => {
@@ -53,7 +60,8 @@ const submitReview = async () => {
       new Blob([JSON.stringify({
         title: form.title,
         content: form.content,
-        post_url: form.post_url
+        post_url: form.post_url,
+        nickname: form.nickname
         })
       ],
       {
@@ -73,6 +81,10 @@ const submitReview = async () => {
     alert('등록 실패')
   }
 }
+
+onMounted(() => {
+  form.nickname = nickname.value ?? ''
+})
 </script>
 
 <style scoped>

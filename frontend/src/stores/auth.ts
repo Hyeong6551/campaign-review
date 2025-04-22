@@ -3,15 +3,17 @@ import axios from 'axios'
 
 interface AuthState {
   token: string | null
-  username: string | null
+  id: string | null
   role: string | null
+  nickname: string | null
 }
 
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({
     token: localStorage.getItem('token'),
-    username: localStorage.getItem('username'),
-    role: localStorage.getItem('role')
+    id: localStorage.getItem('id'),
+    role: localStorage.getItem('role'),
+    nickname: localStorage.getItem('nickname')
   }),
 
   getters: {
@@ -20,26 +22,31 @@ export const useAuthStore = defineStore('auth', {
   },
 
   actions: {
-    setAuth(auth: { isAuthenticated: boolean; username: string; role: string }) {
+    setAuth(auth: { isAuthenticated: boolean; id: string; role: string; nickname: string }) {
       this.token = auth.isAuthenticated ? localStorage.getItem('token') : null
-      this.username = auth.username
+      this.id = auth.id
       this.role = auth.role
+      this.nickname = auth.nickname // 추가
     },
 
-    login(token: string, username: string, role: string) {
+    login(token: string, id: string, role: string, nickname: string) {
       this.token = token
-      this.username = username
+      this.id = id
       this.role = role
+      this.nickname = nickname
+
       localStorage.setItem('token', token)
-      localStorage.setItem('username', username)
+      localStorage.setItem('id', id)
       localStorage.setItem('role', role)
+      localStorage.setItem('nickname', nickname)
     },
 
-    async loginWithCredentials(username: string, password: string) {
+    async loginWithCredentials(id: string, password: string) {
       try {
-        const response = await axios.post('/api/auth/login', { username, password })
-        const { token, role } = response.data
-        this.login(token, username, role)
+        const response = await axios.post('/api/auth/login', { id, password })
+        console.log(response.data)
+        const { token, id: userId, nickname, role } = response.data
+        this.login(token, userId, nickname, role)
         return true
       } catch (error) {
         console.error('Login failed:', error)
@@ -47,9 +54,9 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async register(username: string, password: string, email: string) {
+    async register(id: string, password: string, email: string) {
       try {
-        await axios.post('/api/auth/register', { username, password, email })
+        await axios.post('/api/auth/register', { id, password, email })
         return true
       } catch (error) {
         console.error('Registration failed:', error)
@@ -59,11 +66,14 @@ export const useAuthStore = defineStore('auth', {
 
     logout() {
       this.token = null
-      this.username = null
+      this.id = null
       this.role = null
+      this.nickname = null
+
       localStorage.removeItem('token')
-      localStorage.removeItem('username')
+      localStorage.removeItem('id')
       localStorage.removeItem('role')
+      localStorage.removeItem('nickname')
     }
   }
 }) 

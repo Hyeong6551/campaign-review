@@ -56,6 +56,7 @@ public class AuthController {
                     user.setRole(Role.USER);
 
                     userRepository.save(user);
+                    System.out.println(user);
                     return Mono.just(ResponseEntity.ok().build());
                 });
     }
@@ -64,9 +65,9 @@ public class AuthController {
     public Mono<ResponseEntity<?>> getCurrentUser(@RequestHeader("Authorization") String authHeader) {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             final String token = authHeader.substring(7);
-            String username = jwtUtil.extractUsername(token);
-            return Mono.just(userRepository.findById(username)
-                    .map(user -> ResponseEntity.ok(new LoginResponse(token, user.getId(), user.getRole().value(), user.getEmail())))
+            String user_id = jwtUtil.extractId(token);
+            return Mono.just(userRepository.findById(user_id)
+                    .map(user -> ResponseEntity.ok(new LoginResponse(token, user.getId(), user.getRole().value(), user.getNickname())))
                     .orElse(ResponseEntity.notFound().build()));
         }
         return Mono.just(ResponseEntity.notFound().build());
