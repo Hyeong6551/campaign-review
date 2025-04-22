@@ -21,14 +21,14 @@ public class AuthService {
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public LoginResponse login(LoginRequest loginRequest) {
-        User user = userRepository.findByUsername(loginRequest.getUsername())
+        User user = userRepository.findById(loginRequest.getUsername())
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
 
-        String token = jwtUtil.generateToken(user.getUsername());
-        return new LoginResponse(token, user.getUsername(), user.getRole(), user.getEmail());
+        String token = jwtUtil.generateToken(user.getId());
+        return new LoginResponse(token, user.getId(), user.getRole().value(), user.getEmail());
     }
 } 

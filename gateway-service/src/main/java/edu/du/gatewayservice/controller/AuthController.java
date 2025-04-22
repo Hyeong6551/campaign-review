@@ -3,6 +3,7 @@ package edu.du.gatewayservice.controller;
 import edu.du.gatewayservice.dto.LoginRequest;
 import edu.du.gatewayservice.dto.LoginResponse;
 import edu.du.gatewayservice.dto.RegisterRequest;
+import edu.du.gatewayservice.entity.Role;
 import edu.du.gatewayservice.entity.User;
 import edu.du.gatewayservice.repository.UserRepository;
 import edu.du.gatewayservice.service.AuthService;
@@ -12,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
+
+import static java.time.LocalDateTime.now;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -38,15 +41,19 @@ public class AuthController {
     public Mono<ResponseEntity<Void>> register(@RequestBody RegisterRequest registerRequest) {
         return Mono.just(registerRequest)
                 .flatMap(request -> {
-                    if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+                    if (userRepository.findById(request.getId()).isPresent()) {
                         return Mono.just(ResponseEntity.badRequest().build());
                     }
 
                     User user = new User();
-                    user.setUsername(request.getUsername());
-                    user.setPassword(passwordEncoder.encode(request.getPassword()));
+                    user.setId(request.getId());
+                    user.setNickname(request.getNickname());
                     user.setEmail(request.getEmail());
-                    user.setRole("USER");
+                    user.setPhone(request.getPhone());
+                    user.setPost_url(request.getPost_url());
+                    user.setPassword(passwordEncoder.encode(request.getPassword()));
+                    user.setCreated_at(now());
+                    user.setRole(Role.USER);
 
                     userRepository.save(user);
                     return Mono.just(ResponseEntity.ok().build());
@@ -58,8 +65,8 @@ public class AuthController {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             final String token = authHeader.substring(7);
             String username = jwtUtil.extractUsername(token);
-            return Mono.just(userRepository.findByUsername(username)
-                    .map(user -> ResponseEntity.ok(new LoginResponse(token, user.getUsername(), user.getRole(), user.getEmail())))
+            return Mono.just(userRepository.findById(username)
+                    .map(user -> ResponseEntity.ok(new LoginResponse(token, user.getId(), user.getRole().value(), user.getEmail())))
                     .orElse(ResponseEntity.notFound().build()));
         }
         return Mono.just(ResponseEntity.notFound().build());
