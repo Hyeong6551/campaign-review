@@ -7,6 +7,7 @@
 - Spring Cloud Gateway (WebFlux 기반)
 - Eureka Server
 - H2 Database
+- redis
 - JavaScript (Frontend)
 - Vue.js 3
 - TypeScript
