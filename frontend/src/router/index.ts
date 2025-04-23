@@ -7,6 +7,7 @@ import AdminView from '../views/AdminView.vue'
 import ReviewListView from "@/views/review/ReviewListView.vue";
 import ReviewFormView from "@/views/review/ReviewFormView.vue";
 import ErrorView from "@/views/error/Error.vue"
+import MypageView from "@/views/mypage/Mypage.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -66,6 +67,11 @@ const router = createRouter({
       name: 'admin',
       component: AdminView,
       meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
+      path: '/mypage',
+      name: 'mypage',
+      component: MypageView,
     },
     {
       path: '/:pathMatch(.*)*',

@@ -7,9 +7,8 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableRabbit
-public class BoardApplication {
+public class MyPageApplication {
     public static void main(String[] args) {
-        SpringApplication.run(BoardApplication.class, args);
+        SpringApplication.run(MyPageApplication.class, args);
     }
 } 

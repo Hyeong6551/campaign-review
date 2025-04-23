@@ -15,9 +15,4 @@ public class RegisterRequest {
     private String email;
     private String phone;
     private String post_url;
-
-    public RegisterRequest(String id, String nickname) {
-        this.id = id;
-        this.nickname = nickname;
-    }
 }

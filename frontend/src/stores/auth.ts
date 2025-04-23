@@ -6,6 +6,7 @@ interface AuthState {
   id: string | null
   role: string | null
   nickname: string | null
+  userNo: number | null
 }
 
 export const useAuthStore = defineStore('auth', {
@@ -13,7 +14,8 @@ export const useAuthStore = defineStore('auth', {
     token: localStorage.getItem('token'),
     id: localStorage.getItem('id'),
     role: localStorage.getItem('role'),
-    nickname: localStorage.getItem('nickname')
+    nickname: localStorage.getItem('nickname'),
+    userNo: localStorage.getItem('userNo') ? Number(localStorage.getItem('userNo')) : null
   }),
 
   getters: {
@@ -22,31 +24,35 @@ export const useAuthStore = defineStore('auth', {
   },
 
   actions: {
-    setAuth(auth: { isAuthenticated: boolean; id: string; role: string; nickname: string }) {
+    setAuth(auth: { isAuthenticated: boolean; id: string; role: string; nickname: string; userNo: number }) {
       this.token = auth.isAuthenticated ? localStorage.getItem('token') : null
       this.id = auth.id
       this.role = auth.role
-      this.nickname = auth.nickname // 추가
+      this.nickname = auth.nickname
+      this.userNo = auth.userNo
     },
 
-    login(token: string, id: string, role: string, nickname: string) {
+    login(token: string, id: string, role: string, nickname: string, userNo: number) {
       this.token = token
       this.id = id
       this.role = role
       this.nickname = nickname
+      this.userNo = userNo
 
       localStorage.setItem('token', token)
       localStorage.setItem('id', id)
       localStorage.setItem('role', role)
       localStorage.setItem('nickname', nickname)
+      localStorage.setItem('userNo', userNo)
     },
 
     async loginWithCredentials(id: string, password: string) {
       try {
         const response = await axios.post('/api/auth/login', { id, password })
         console.log(response.data)
-        const { token, id: userId, nickname, role } = response.data
-        this.login(token, userId, nickname, role)
+        const { token, id: userId, role, nickname, userNo } = response.data
+        console.log(userId)
+        this.login(token, userId, role, nickname, userNo)
         return true
       } catch (error) {
         console.error('Login failed:', error)
@@ -69,11 +75,13 @@ export const useAuthStore = defineStore('auth', {
       this.id = null
       this.role = null
       this.nickname = null
+      this.userNo = null
 
       localStorage.removeItem('token')
       localStorage.removeItem('id')
       localStorage.removeItem('role')
       localStorage.removeItem('nickname')
+      localStorage.removeItem('userNo')
     }
   }
 }) 

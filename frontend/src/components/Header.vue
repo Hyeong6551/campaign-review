@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import '../assets/style.css';
 
-import { ref, onMounted, watch } from 'vue'
+import { onMounted, watch } from 'vue'
 import { useAuthStore } from '../stores/auth.ts'
 import { storeToRefs } from 'pinia'
 
 const authStore = useAuthStore()
-const { isAuthenticated, id, role, nickname } = storeToRefs(authStore)
+const { isAuthenticated, id, role, nickname, userNo } = storeToRefs(authStore)
 
 // 로그인 상태 변경 감지
 watch(() => authStore.isAuthenticated, (newValue) => {
@@ -14,10 +14,12 @@ watch(() => authStore.isAuthenticated, (newValue) => {
     id.value = localStorage.getItem('id') || ''
     role.value = localStorage.getItem('role') || ''
     nickname.value = localStorage.getItem('nickname') || ''
+    userNo.value = localStorage.getItem('userNo') ? Number(localStorage.getItem('userNo')) : null
   } else {
     id.value = ''
     role.value = ''
     nickname.value = ''
+    userNo.value = null
   }
 })
 
@@ -26,13 +28,24 @@ const handleLogout = () => {
 }
 
 onMounted(() => {
+  const idItem = localStorage.getItem('id')
+  const roleItem = localStorage.getItem('role')
+  const nicknameItem = localStorage.getItem('nickname')
+  const userNoItem = localStorage.getItem('userNo')
+
+  console.log('id:', idItem)
+  console.log('role:', roleItem)
+  console.log('nickname:', nicknameItem)
+  console.log('userNo:', userNoItem)
+
   const token = localStorage.getItem('token')
   if (token) {
     authStore.setAuth({
       isAuthenticated: true,
       id: localStorage.getItem('id') || '',
       role: localStorage.getItem('role') || '',
-      nickname: localStorage.getItem('nickname') || ''
+      nickname: localStorage.getItem('nickname') || '',
+      userNo: localStorage.getItem('userNo')
     })
   }
 })
@@ -65,7 +78,7 @@ onMounted(() => {
       <!-- Login/Register -->
       <div class="flex items-center space-x-6">
         <template v-if="isAuthenticated">
-          <span class="text-white font-semibold">👤 {{ nickname }}</span>
+          <a href="/mypage"><span class="text-white font-semibold">👤{{id}}({{ nickname }})</span></a>
           <button @click="handleLogout" class="text-white hover:text-blue-300 font-semibold transition duration-200">로그아웃</button>
         </template>
         <template v-else>

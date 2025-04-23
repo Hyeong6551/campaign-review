@@ -1,6 +1,6 @@
 package edu.du.board.service;
 
-import edu.du.board.config.RabbitMQConfig;
+import edu.du.board.client.RabbitMQConfig;
 import edu.du.board.model.Board;
 import edu.du.board.model.OrderCompleteMessage;
 import edu.du.board.repository.BoardRepository;

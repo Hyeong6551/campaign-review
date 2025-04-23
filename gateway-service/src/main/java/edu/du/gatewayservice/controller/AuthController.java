@@ -61,15 +61,15 @@ public class AuthController {
                 });
     }
 
-    @GetMapping("/current")
-    public Mono<ResponseEntity<?>> getCurrentUser(@RequestHeader("Authorization") String authHeader) {
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            final String token = authHeader.substring(7);
-            String user_id = jwtUtil.extractId(token);
-            return Mono.just(userRepository.findById(user_id)
-                    .map(user -> ResponseEntity.ok(new LoginResponse(token, user.getId(), user.getRole().value(), user.getNickname())))
-                    .orElse(ResponseEntity.notFound().build()));
-        }
-        return Mono.just(ResponseEntity.notFound().build());
-    }
+//    @GetMapping("/current")
+//    public Mono<ResponseEntity<?>> getCurrentUser(@RequestHeader("Authorization") String authHeader) {
+//        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+//            final String token = authHeader.substring(7);
+//            String user_id = jwtUtil.extractId(token);
+//            return Mono.just(userRepository.findById(user_id)
+//                    .map(user -> ResponseEntity.ok(new LoginResponse(token, user.getUserNo() ,user.getId(), user.getRole().value(), user.getNickname())))
+//                    .orElse(ResponseEntity.notFound().build()));
+//        }
+//        return Mono.just(ResponseEntity.notFound().build());
+//    }
 } 

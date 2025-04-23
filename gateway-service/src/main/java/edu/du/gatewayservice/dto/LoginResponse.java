@@ -9,7 +9,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class LoginResponse {
     private String token;
+    private Long userNo;
     private String id;
-    private String nickname;
     private String role;
+    private String nickname;
 } 

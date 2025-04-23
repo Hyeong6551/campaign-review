@@ -10,6 +10,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/board-service/sb3_msa3.board-service.test.iml" filepath="$PROJECT_DIR$/.idea/modules/board-service/sb3_msa3.board-service.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/eureka-server/sb3_msa3.eureka-server.main.iml" filepath="$PROJECT_DIR$/.idea/modules/eureka-server/sb3_msa3.eureka-server.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/gateway-service/sb3_msa3.gateway-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/gateway-service/sb3_msa3.gateway-service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mypage-service/sb3_msa3.mypage-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/mypage-service/sb3_msa3.mypage-service.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/review-service/sb3_msa3.review-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/review-service/sb3_msa3.review-service.main.iml" />
     </modules>
   </component>

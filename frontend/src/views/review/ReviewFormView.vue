@@ -2,7 +2,7 @@
   <div class="container my-5">
     <h2 class="title">리뷰 작성</h2>
     <form @submit.prevent="submitReview" class="review-form">
-      <input type="text" v-model="form.nickname" id="nickname"/>
+      <input type="hidden" v-model="form.nickname" id="nickname"/>
       <div class="form-group">
         <label for="title">제목</label>
         <input v-model="form.title" id="title" maxlength="40" placeholder="최대 40자 까지 입력 가능합니다" type="text" required />

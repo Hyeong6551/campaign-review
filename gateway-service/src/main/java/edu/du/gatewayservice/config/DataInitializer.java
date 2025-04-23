@@ -8,6 +8,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Component
 public class DataInitializer implements CommandLineRunner {
 
@@ -27,6 +29,7 @@ public class DataInitializer implements CommandLineRunner {
             admin.setRole(Role.ADMIN);
             admin.setNickname("신창섭");
             admin.setPhone("01012345678");
+            admin.setCreated_at(LocalDateTime.now());
             userRepository.save(admin);
 
             User user1 = new User();
@@ -36,6 +39,7 @@ public class DataInitializer implements CommandLineRunner {
             user1.setRole(Role.USER);
             user1.setNickname("사용자입니다");
             user1.setPhone("01011112222");
+            user1.setCreated_at(LocalDateTime.now());
             userRepository.save(user1);
 
             User user2 = new User();
@@ -45,6 +49,7 @@ public class DataInitializer implements CommandLineRunner {
             user2.setRole(Role.USER);
             user2.setNickname("다니입자용사");
             user2.setPhone("01011111111");
+            user2.setCreated_at(LocalDateTime.now());
             userRepository.save(user2);
         }
     }
