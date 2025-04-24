@@ -8,6 +8,7 @@
       <p><strong>전화번호:</strong> {{ user.phone }}</p>
       <p><strong>가입일:</strong> {{ formatDate(user.created_at) }}</p>
       <button @click="editMode">수정하기</button>
+      <button @click="deleteAccount">회원탈퇴</button>
     </div>
 
     <div class="edit-box" v-else>
@@ -34,9 +35,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router'
 import axios from 'axios'
 
 const authStore = useAuthStore()
+const router = useRouter()
 
 const user = ref<any>(null)
 const editUser = ref({
@@ -81,6 +84,7 @@ const cancelEdit = () => {
   editUser.value.confirmPassword = ''
 }
 
+// 회원 정보 수정
 const updateUserInfo = async () => {
   if (editUser.value.newPassword && editUser.value.newPassword !== editUser.value.confirmPassword) {
     alert('새 비밀번호가 일치하지 않아요잉~')
@@ -116,6 +120,23 @@ const updateUserInfo = async () => {
   } catch (error) {
     console.error('정보 수정 실패잉~', error)
     alert('정보 수정에 실패했어요잉~')
+  }
+}
+
+// 회원 탈퇴
+const deleteAccount = async () => {
+  if (!confirm('정말 탈퇴하시겠습니까? 😢')) return
+
+  try {
+    await axios.delete(`/api/user/delete/${authStore.userNo}`, {
+      withCredentials: true
+    })
+    authStore.logout()
+    alert('회원 탈퇴가 완료되었어요. 감사합니다 🫶')
+    router.push('/')
+  } catch (err) {
+    console.error('탈퇴 실패:', err)
+    alert('탈퇴 중 오류가 발생했어요 😓')
   }
 }
 

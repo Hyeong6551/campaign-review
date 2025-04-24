@@ -22,6 +22,7 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
     }
 
+    // 회원 정보 수정
     @RabbitListener(queues = RabbitMQConsumerConfig.QUEUE_NAME)
     public void receive(UserUpdateRequest msg) {
         User user = userRepository.findById(msg.getUserNo())
@@ -37,5 +38,10 @@ public class UserService {
 
         userRepository.save(user);
         System.out.println("✅ 사용자 정보 수정 완료: " + msg.getUserNo());
+    }
+
+    // 회원 탈퇴
+    public void deleteUser(Long userNo) {
+        userRepository.deleteById(userNo);
     }
 }
