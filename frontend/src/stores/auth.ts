@@ -30,6 +30,11 @@ export const useAuthStore = defineStore('auth', {
       this.role = auth.role
       this.nickname = auth.nickname
       this.userNo = auth.userNo
+
+      localStorage.setItem('id', auth.id)
+      localStorage.setItem('role', auth.role)
+      localStorage.setItem('nickname', auth.nickname)
+      localStorage.setItem('userNo', String(auth.userNo))
     },
 
     login(token: string, id: string, role: string, nickname: string, userNo: number) {
@@ -43,15 +48,13 @@ export const useAuthStore = defineStore('auth', {
       localStorage.setItem('id', id)
       localStorage.setItem('role', role)
       localStorage.setItem('nickname', nickname)
-      localStorage.setItem('userNo', userNo)
+      localStorage.setItem('userNo', String(userNo))
     },
 
     async loginWithCredentials(id: string, password: string) {
       try {
-        const response = await axios.post('/api/auth/login', { id, password })
-        console.log(response.data)
+        const response = await axios.post('/api/auth/login', { id, password }, {  withCredentials: true })
         const { token, id: userId, role, nickname, userNo } = response.data
-        console.log(userId)
         this.login(token, userId, role, nickname, userNo)
         return true
       } catch (error) {

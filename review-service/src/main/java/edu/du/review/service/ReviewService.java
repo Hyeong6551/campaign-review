@@ -5,11 +5,13 @@ import edu.du.review.entity.Review;
 import edu.du.review.repository.ReviewRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,6 +41,7 @@ public class ReviewService {
             String imageUrl = "/images/" + filename;
 
             Review review = Review.builder()
+                    .userNo(reviewDTO.getUserNo())
                     .nickname(reviewDTO.getNickname())
                     .title(reviewDTO.getTitle())
                     .content(reviewDTO.getContent())
@@ -46,14 +49,41 @@ public class ReviewService {
                     .image_url(imageUrl)
                     .createdDate(LocalDateTime.now())
                     .build();
+            System.out.println(review);
             return reviewRepo.save(review);
         } catch (IOException e) {
             throw new RuntimeException("이미지 저장 실패", e);
         }
     }
 
-    // 목록 조회
+    // 리뷰 목록 조회
     public List<Review> findAll() {
         return reviewRepo.findAll();
+    }
+
+    // 사용자가 작성한 리뷰 조회
+    public List<ReviewDTO> getReviewsByUserNo(Long userNo) {
+        List<Review> reviews = reviewRepo.findByUserNo(userNo);
+        List<ReviewDTO> reviewDTO = new ArrayList<>();
+
+        for (Review review : reviews) {
+            ReviewDTO dto = ReviewDTO.builder()
+                    .no(review.getPost_no())
+                    .nickname(review.getNickname())
+                    .title(review.getTitle())
+                    .content(review.getContent())
+                    .postURL(review.getPost_url())
+                    .build();
+            reviewDTO.add(dto);
+        }
+        return reviewDTO;
+    }
+
+    // 리뷰 삭제
+    public void deleteReview(Long postNo) {
+        if (!reviewRepo.existsById(postNo)) {
+            throw new IllegalArgumentException("리뷰가 존재하지 않습니다.");
+        }
+        reviewRepo.deleteById(postNo);
     }
 }

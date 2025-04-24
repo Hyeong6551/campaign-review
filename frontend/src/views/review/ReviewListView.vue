@@ -22,7 +22,9 @@ const maxReview = 18
 // 리뷰 불러오기
 const fetchReviews = async () => {
   try {
-    const res = await axios.get('/api/reviews/')
+    const res = await axios.get('/api/reviews/', {
+      withCredentials: true // ✅ 반드시 추가!
+    })
     reviews.value = res.data.map((item: any) => ({
       id: item.post_no,
       nickname: item.nickname,

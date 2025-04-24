@@ -7,7 +7,9 @@ import AdminView from '../views/AdminView.vue'
 import ReviewListView from "@/views/review/ReviewListView.vue";
 import ReviewFormView from "@/views/review/ReviewFormView.vue";
 import ErrorView from "@/views/error/Error.vue"
+import MypageLayout from "@/views/mypage/MypageLayout.vue";
 import MypageView from "@/views/mypage/Mypage.vue";
+import MyReviewList from "@/views/mypage/MyReviewList.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -69,14 +71,31 @@ const router = createRouter({
       meta: { requiresAuth: true, requiresAdmin: true }
     },
     {
-      path: '/mypage',
-      name: 'mypage',
-      component: MypageView,
-    },
-    {
       path: '/:pathMatch(.*)*',
       name: 'error',
       component: ErrorView,
+    },
+    {
+      path: '/mypage',
+      component: MypageLayout,
+      children: [
+        {
+          path: '',
+          redirect: '/mypage/info' // 기본: 내 정보잉~
+        },
+        {
+          path: 'info',
+          component: MypageView
+        },
+        // {
+        //   path: 'applications',
+        //   component: MyApplications
+        // },
+        {
+          path: '/mypage/review',
+          component: MyReviewList
+        }
+      ]
     }
   ]
 })

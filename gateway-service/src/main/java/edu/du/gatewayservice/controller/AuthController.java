@@ -18,6 +18,12 @@ import static java.time.LocalDateTime.now;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(
+        origins = "http://localhost:5173",
+        allowedHeaders = "*",
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS},
+        allowCredentials = "true"
+)
 public class AuthController {
 
     @Autowired

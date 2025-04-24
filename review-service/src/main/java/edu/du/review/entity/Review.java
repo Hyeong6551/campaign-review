@@ -16,6 +16,7 @@ public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long post_no;
+    private Long userNo;
     @Column(nullable = false)
     private String title;
     private String nickname;

@@ -58,6 +58,7 @@ const submitReview = async () => {
   formData.append(
       'review',
       new Blob([JSON.stringify({
+        userNo: authStore.userNo,
         title: form.title,
         content: form.content,
         post_url: form.post_url,
@@ -83,6 +84,11 @@ const submitReview = async () => {
 }
 
 onMounted(() => {
+  if (!authStore.isAuthenticated) {
+    alert('로그인이 필요합니다.')
+    router.push('/')
+    return
+  }
   form.nickname = nickname.value ?? ''
 })
 </script>

@@ -45,7 +45,7 @@ onMounted(() => {
       id: localStorage.getItem('id') || '',
       role: localStorage.getItem('role') || '',
       nickname: localStorage.getItem('nickname') || '',
-      userNo: localStorage.getItem('userNo')
+      userNo: Number(localStorage.getItem('userNo') || 0)
     })
   }
 })
