@@ -26,7 +26,7 @@ const fetchReviews = async () => {
       withCredentials: true // ✅ 반드시 추가!
     })
     reviews.value = res.data.map((item: any) => ({
-      id: item.post_no,
+      id: item.postNo,
       nickname: item.nickname,
       title: item.title,
       content: item.content,

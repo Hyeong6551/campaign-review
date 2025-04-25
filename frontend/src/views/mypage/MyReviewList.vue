@@ -6,7 +6,8 @@
       <p><strong>제목:</strong> {{ review.title }}</p>
       <p><strong>내용:</strong> {{ review.content }}</p>
       <p><strong>작성일:</strong> {{ formatDate(review.createdAt) }}</p>
-      <button @click="deleteReview(review.id)">삭제</button>
+      <button class="mx-2" @click="deleteReview(review.postNo)">삭제</button>
+      <button class="mx-2" @click="editReview(review.postNo)">수정</button>
     </div>
 
     <div v-else>
@@ -19,15 +20,18 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useAuthStore } from '@/stores/auth'
+import router from "@/router";
 
 const authStore = useAuthStore()
 const reviews = ref<any[]>([])
 
+// 리뷰 조회
 const fetchReviews = async () => {
   try {
     const response = await axios.get(`http://localhost:8004/api/reviews/${authStore.userNo}`)
+    console.log(console.log)
     reviews.value = response.data.map((item: any) => ({
-      id: item.no,
+      postNo: item.postNo,
       title: item.title,
       nickname: item.nickname,
       content: item.content,
@@ -41,14 +45,15 @@ const fetchReviews = async () => {
   }
 }
 
-const deleteReview = async (id: number) => {
+// 리뷰 삭제
+const deleteReview = async (postNo: number) => {
   if (!confirm('정말 삭제하시겠습니까?')) return
 
   try {
-    await axios.delete(`http://localhost:8004/api/reviews/${id}`, {
+    await axios.delete(`http://localhost:8004/api/reviews/${postNo}`, {
       withCredentials: true
     })
-    reviews.value = reviews.value.filter(r => r.id !== id)
+    reviews.value = reviews.value.filter(r => r.postNo !== postNo)
     alert('삭제 완료!')
   } catch (err) {
     alert('삭제 실패 ㅠㅠ')
@@ -59,6 +64,11 @@ const deleteReview = async (id: number) => {
 const formatDate = (dateStr: string) => {
   const d = new Date(dateStr)
   return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`
+}
+
+// 리뷰 수정
+const editReview = (postNo: number) => {
+  router.push({ name: 'ReviewEdit', params: { postNo } })
 }
 
 onMounted(fetchReviews)

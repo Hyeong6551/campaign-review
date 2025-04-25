@@ -1,7 +1,7 @@
 <template>
   <div class="container my-5">
     <h2 class="title">리뷰 작성</h2>
-    <form @submit.prevent="submitReview" class="review-form">
+    <form class="review-form">
       <input type="hidden" v-model="form.nickname" id="nickname"/>
       <div class="form-group">
         <label for="title">제목</label>
@@ -13,13 +13,27 @@
       </div>
       <div class="form-group">
         <label for="title">리뷰 URL</label>
-        <input v-model="form.post_url" id="blogURL" type="text" placeholder="ex) https://blog.naver.com/tpgud333/223833623056" required />
+        <input v-model="form.postUrl" id="blogURL" type="text" placeholder="ex) https://blog.naver.com/tpgud333/223833623056" />
       </div>
       <div class="form-group">
         <label for="file">이미지 업로드</label>
-        <input @change="onFileChange" id="file" type="file" accept="image/*" required />
+        <input @change="onFileChange" id="file" type="file" accept="image/*" />
       </div>
-      <button type="submit" class="btn">등록</button>
+      <button
+          v-if="!isEditMode"
+          type="button"
+          class="btn"
+          @click="submitReview">
+        등록
+      </button>
+      <button
+          v-else
+          type="button"
+          class="btn"
+          @click="updateReview">
+        수정
+      </button>
+
     </form>
   </div>
 </template>
@@ -27,21 +41,26 @@
 <script setup lang="ts">
 import {ref, reactive, onMounted} from 'vue'
 import axios from 'axios'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import {useAuthStore} from "@/stores/auth.ts";
 
 const authStore = useAuthStore()
 const { nickname } = storeToRefs(authStore)
 
+
 const file = ref<File | null>(null)
+const isEditMode = ref(false)
+
+const route = useRoute()
 const router = useRouter()
 
 const form = reactive({
   title : '',
   content :'',
-  post_url : '',
-  nickname : ''
+  postUrl : '',
+  nickname : '',
+  image_url: ''
 })
 
 const onFileChange = (event: Event) => {
@@ -61,11 +80,9 @@ const submitReview = async () => {
         userNo: authStore.userNo,
         title: form.title,
         content: form.content,
-        post_url: form.post_url,
+        postUrl: form.postUrl,
         nickname: form.nickname
-        })
-      ],
-      {
+      })], {
         type: 'application/json',
       })
   )
@@ -79,17 +96,64 @@ const submitReview = async () => {
     router.push('/review')
   } catch (error) {
     console.error('등록 실패:', error)
-    alert('등록 실패')
+    alert('등록 실패!')
   }
 }
 
-onMounted(() => {
+// 리뷰 수정
+const updateReview = async () => {
+  const formData = new FormData()
+  formData.append(
+      'review',
+      new Blob([JSON.stringify({
+        userNo: authStore.userNo,
+        title: form.title,
+        content: form.content,
+        postUrl: form.postUrl,
+        nickname: form.nickname
+      })], { type: 'application/json' })
+  )
+  if (file.value) {
+    formData.append('image', file.value)
+  }
+  const reviewId = Number(route.params.postNo)
+
+  try {
+    await axios.put(`/api/reviews/${reviewId}`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    alert('리뷰 수정 완료!')
+    router.push('/review')
+  } catch (error) {
+    console.error('수정 실패:', error)
+    alert('리뷰 수정 실패!')
+  }
+}
+
+onMounted(async() => {
   if (!authStore.isAuthenticated) {
     alert('로그인이 필요합니다.')
     router.push('/')
     return
   }
+
   form.nickname = nickname.value ?? ''
+
+  const reviewId = Number(route.params.postNo)
+  if (reviewId) {
+    isEditMode.value = true
+    try {
+      const { data } = await axios.get(`/api/reviews/${authStore.userNo}/${reviewId}`)
+      console.log('📦 불러온 리뷰 데이터:', data)
+      form.title = data.title
+      form.content = data.content
+      form.postUrl = data.postUrl
+      form.nickname = data.nickname
+      form.image_url = data.image_url // 필요하면
+    } catch (error) {
+      console.error('리뷰 조회 실패:', error)
+    }
+  }
 })
 </script>
 

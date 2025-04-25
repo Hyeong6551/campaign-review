@@ -42,6 +42,36 @@ public class ReviewController {
         return ResponseEntity.ok(PostReview);
     }
 
+    // 리뷰 단일 조회 (수정)
+    @GetMapping("/{userNo}/{no}")
+    public ResponseEntity<ReviewDTO> getUserReview(
+            @PathVariable Long userNo,
+            @PathVariable Long no) {
+
+        ReviewDTO dto = reviewService.getReviewByUserNoAndPostNo(userNo, no);
+        return ResponseEntity.ok(dto);
+    }
+
+    // 리뷰 수정
+    @PutMapping("/{reviewId}")
+    public ResponseEntity<ReviewDTO> updateReview(
+            @PathVariable Long reviewId,
+            @RequestPart("review") ReviewDTO reviewDTO,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile) {
+
+        Review updated = reviewService.updateReview(reviewId, reviewDTO, imageFile);
+        ReviewDTO responseDto = ReviewDTO.builder()
+                .postNo(updated.getPostNo())
+                .nickname(updated.getNickname())
+                .title(updated.getTitle())
+                .content(updated.getContent())
+                .postUrl(updated.getPost_url())
+                .image_url(updated.getImage_url())
+                .build();
+
+        return ResponseEntity.ok(responseDto);
+    }
+
     // 리뷰 삭제
     @DeleteMapping("/{postNo}")
     public ResponseEntity<Void> deleteReview(@PathVariable Long postNo) {

@@ -8,10 +8,11 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class ReviewDTO {
-    private Long no;
+    private Long postNo;
     private Long userNo;
     private String nickname;
     private String title;
     private String content;
-    private String postURL;
+    private String postUrl;
+    private String image_url;
 }

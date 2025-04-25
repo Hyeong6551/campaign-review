@@ -35,6 +35,11 @@ const router = createRouter({
       component: ReviewListView
     },
     {
+      path: '/mypage/review/:postNo/edit',
+      name: 'ReviewEdit',
+      component: () => import('../views/review/ReviewFormView.vue')
+    },
+    {
       path: '/review/:page?',
       name: 'Review',
       component: ReviewListView, // 해당 컴포넌트
