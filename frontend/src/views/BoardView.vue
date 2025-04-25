@@ -9,7 +9,6 @@ interface Post {
   createdAt: string
 }
 
-const router = useRouter()
 const posts = ref<Post[]>([])
 const currentPage = ref(0)
 const totalPages = ref(0)
@@ -21,7 +20,7 @@ const loadPosts = async (page: number) => {
     currentPage.value = response.data.number
     totalPages.value = response.data.totalPages
   } catch (error) {
-    console.error('게시글 목록을 불러오는데 실패했습니다:', error)
+    console.error('게시글 목록을 불러오는데 실패했습니다', error)
   }
 }
 

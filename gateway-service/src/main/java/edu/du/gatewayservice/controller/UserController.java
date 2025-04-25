@@ -1,5 +1,6 @@
 package edu.du.gatewayservice.controller;
 
+import edu.du.gatewayservice.dto.UserDeleteRequest;
 import edu.du.gatewayservice.entity.User;
 import edu.du.gatewayservice.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{userNo}")
-    public ResponseEntity<String> deleteUser(@PathVariable Long userNo) {
+    public ResponseEntity<String> deleteUser(@PathVariable UserDeleteRequest userNo) {
         userService.deleteUser(userNo);
         return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
     }

@@ -9,23 +9,45 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQUserConfig {
-    public static final String EXCHANGE_NAME = "user.update.exchange";
-    public static final String ROUTING_KEY = "user.update";
+    public static final String UPDATE_QUEUE = "user.update.queue";
+    public static final String DELETE_QUEUE = "user.delete.queue";
+    public static final String EXCHANGE = "user.exchange";
 
     @Bean
-    public TopicExchange userUpdateExchange() {
-        return new TopicExchange(EXCHANGE_NAME);
+    public TopicExchange exchange() {
+        return new TopicExchange(EXCHANGE);
     }
 
     @Bean
-    public Jackson2JsonMessageConverter jsonMessageConverter() {
+    public Queue updateQueue() {
+        return new Queue(UPDATE_QUEUE);
+    }
+
+    @Bean
+    public Queue deleteQueue() {
+        return new Queue(DELETE_QUEUE);
+    }
+
+    @Bean
+    public Binding updateBinding() {
+        return BindingBuilder.bind(updateQueue()).to(exchange()).with("user.update");
+    }
+
+    @Bean
+    public Binding deleteBinding() {
+        return BindingBuilder.bind(deleteQueue()).to(exchange()).with("user.delete");
+    }
+
+    @Bean
+    public Jackson2JsonMessageConverter converter() {
         return new Jackson2JsonMessageConverter();
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory factory) {
-        RabbitTemplate template = new RabbitTemplate(factory);
-        template.setMessageConverter(jsonMessageConverter());
+    public AmqpTemplate amqpTemplate(ConnectionFactory connectionFactory) {
+        RabbitTemplate template = new RabbitTemplate(connectionFactory);
+        template.setMessageConverter(converter());
         return template;
     }
 }
+

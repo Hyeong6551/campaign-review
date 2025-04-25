@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
+import router from "@/router";
 
 interface AuthState {
   token: string | null
@@ -85,6 +86,8 @@ export const useAuthStore = defineStore('auth', {
       localStorage.removeItem('role')
       localStorage.removeItem('nickname')
       localStorage.removeItem('userNo')
+
+      router.push('/')
     }
   }
 }) 

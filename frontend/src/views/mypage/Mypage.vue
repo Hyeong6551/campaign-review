@@ -128,7 +128,7 @@ const deleteAccount = async () => {
   if (!confirm('정말 탈퇴하시겠습니까? 😢')) return
 
   try {
-    await axios.delete(`/api/user/delete/${authStore.userNo}`, {
+    await axios.delete(`/api/mypage/delete/${authStore.userNo}`, {
       withCredentials: true
     })
     authStore.logout()

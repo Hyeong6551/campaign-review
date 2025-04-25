@@ -1,9 +1,11 @@
 package edu.du.gatewayservice.service;
 
 import edu.du.gatewayservice.config.RabbitMQConsumerConfig;
+import edu.du.gatewayservice.dto.UserDeleteRequest;
 import edu.du.gatewayservice.dto.UserUpdateRequest;
 import edu.du.gatewayservice.entity.User;
 import edu.du.gatewayservice.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,7 +25,7 @@ public class UserService {
     }
 
     // 회원 정보 수정
-    @RabbitListener(queues = RabbitMQConsumerConfig.QUEUE_NAME)
+    @RabbitListener(queues = "user.update.queue")
     public void receive(UserUpdateRequest msg) {
         User user = userRepository.findById(msg.getUserNo())
                 .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
@@ -41,7 +43,10 @@ public class UserService {
     }
 
     // 회원 탈퇴
-    public void deleteUser(Long userNo) {
+    @RabbitListener(queues = "user.delete.queue")
+    public void deleteUser(UserDeleteRequest request) {
+        Long userNo = request.getUserNo();
         userRepository.deleteById(userNo);
+        System.out.println("✅ 유저 삭제 완료: " + userNo);
     }
 }

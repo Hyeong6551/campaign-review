@@ -1,6 +1,7 @@
 package edu.du.mypage.controller;
 
 import edu.du.mypage.dto.MyPageDto;
+import edu.du.mypage.dto.UserDeleteRequest;
 import edu.du.mypage.dto.UserUpdateRequest;
 import edu.du.mypage.service.MyPageService;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,14 @@ public class MyPageController {
     }
 
     @PutMapping("/info")
-    public ResponseEntity<?> updateUserInfo(@RequestBody UserUpdateRequest message) {
-        myPageService.send(message);
-        return ResponseEntity.ok("수정 요청 전송 완료");
+    public ResponseEntity<?> updateUser(@RequestBody UserUpdateRequest dto) {
+        myPageService.sendUpdate(dto);
+        return ResponseEntity.ok("요청 완료");
+    }
+
+    @DeleteMapping("/delete/{userNo}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long userNo) {
+        myPageService.sendDelete(new UserDeleteRequest(userNo));
+        return ResponseEntity.ok("탈퇴 요청 전송 완료");
     }
 }
